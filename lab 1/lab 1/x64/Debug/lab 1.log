@@ -1,2 +1,4 @@
 ﻿  源.cpp
+D:\学习\学期3\网络技术应用\Network-Technology\lab 1\lab 1\源.cpp(78,17): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+D:\学习\学期3\网络技术应用\Network-Technology\lab 1\lab 1\源.cpp(79,20): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   lab 1.vcxproj -> D:\学习\学期3\网络技术应用\Network-Technology\lab 1\x64\Debug\lab 1.exe

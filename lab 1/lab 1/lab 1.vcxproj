@@ -101,8 +101,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Programe\Npcap\npcap-sdk-1.13\Include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -110,7 +110,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Programe\Npcap\npcap-sdk-1.13\Lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>D:\Programe\Npcap\npcap-sdk-1.13\Lib\x64\wpcap.lib;D:\Programe\Npcap\npcap-sdk-1.13\Lib\x64\Packet.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D:\Windows Kits\10\Lib\10.0.19041.0\um\x64\WS2_32.Lib;D:\Programe\Npcap\npcap-sdk-1.13\Lib\x64\wpcap.lib;D:\Programe\Npcap\npcap-sdk-1.13\Lib\x64\Packet.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
