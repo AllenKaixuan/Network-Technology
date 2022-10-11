@@ -34,6 +34,7 @@ struct dev
 	std::string descrip;
 	std::string addr;
 	std::string netmask;
+	std::string broadaddr;
 	
 };
 std::vector<dev> devices;
@@ -102,6 +103,25 @@ void output()
 	}
 	std::cout <<"The numbers of NIC: " << devices.size()<<std::endl;
 }
+std::string transIp(DWORD in)//对应的IP地址
+{
+	std::string ans;
+	DWORD mask[] = { 0xFF000000,0x00FF0000,0x0000FF00,0x000000FF };
+	DWORD num[4];
+
+	num[0] = in & mask[0];
+	num[0] = num[0] >> 24;
+	num[1] = in & mask[1];
+	num[1] = num[1] >> 16;
+	num[2] = in & mask[2];
+	num[2] = num[2] >> 8;
+	num[3] = in & mask[3];
+
+	char temp[100];
+	sprintf_s(temp, "%d.%d.%d.%d", num[0], num[1], num[2], num[3]);
+	ans = temp;
+	return ans;
+}
 
 void capturePacket()
 {
@@ -121,34 +141,37 @@ void capturePacket()
 	}
 	output();
 	std::cout << "Please choose the NIC:" << std::endl;
-	std::cin >> nicId;
-	if (nicId >= devices.size() || nicId < 0) 
-	{
-		std::cout << "NIC not exsits.Choose again!" << std::endl;
-		return;
-	}
-	if ((adapter = pcap_open(devices[nicId].name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 3000, NULL, errbuf)) == NULL) //snaplen表示包的长度
-	{
-		std::cout << "Open failed!";
-		return;
-	}
-	else
-	{
-		std::cout << "Monitor NIC:" << std::endl << devices[nicId].name<<std::endl<<devices[nicId].descrip<<std::endl;
-	}
-	if ((res = pcap_next_ex(adapter, &pkt_header, &pkt_data)) != 1) // 不是所有端口都在使用，2、3可以
-	{
-		if (res != 0)
-			std::cout << "Cpature fialed，try another NIC! Error code: " << res << std::endl;
+	while (1) {
+		std::cin >> nicId;
+		if (nicId >= devices.size() || nicId < 0)
+		{
+			std::cout << "NIC not exsits.Choose again!" << std::endl;
+			continue;
+		}
+		if ((adapter = pcap_open(devices[nicId].name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 3000, NULL, errbuf)) == NULL) //snaplen表示包的长度
+		{
+			std::cout << "Open failed!"<<std::endl;
+			continue;
+		}
 		else
-			std::cout << "Out of time, try again!";
-		return;
-	}
+		{
+			std::cout << "Monitor NIC:" << std::endl << devices[nicId].name << std::endl << devices[nicId].descrip << std::endl;
+		}
+		if ((res = pcap_next_ex(adapter, &pkt_header, &pkt_data)) != 1) // 不是所有端口都在使用，2、3可以
+		{
+			if (res != 0)
+				std::cout << "Cpature fialed，try another NIC! Error code: " << res << std::endl;
+			else
+				std::cout << "Out of time, try again!";
+			continue;
+			
+		}
 
-	IPPacket = (Data_t*)pkt_data;
-	SourceIP = ntohl(IPPacket->IPHeader.SrcIP);
-	DestinationIP = ntohl(IPPacket->IPHeader.DstIP);
-	std::cout << "Sip" << SourceIP;
+		IPPacket = (Data_t*)pkt_data;
+		SourceIP = ntohl(IPPacket->IPHeader.SrcIP);
+		DestinationIP = ntohl(IPPacket->IPHeader.DstIP);
+		std::cout << "Source IP: " << transIp(ntohl(SourceIP)) << std::endl;
+	}
 
 }
 
