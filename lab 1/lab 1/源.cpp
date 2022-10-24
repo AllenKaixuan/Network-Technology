@@ -18,7 +18,7 @@ typedef struct IPHeader_t {		//IP首部
 	WORD	Flag_Segment;
 	BYTE	TTL;
 	BYTE	Protocol;
-	WORD	Checksum;
+	WORD	checkSum;
 	ULONG	SrcIP;
 	ULONG	DstIP;
 } IPHeader_t;
@@ -67,7 +67,7 @@ void getAllDev()
 	{
 		dev temp;
 		temp.name = d->name;
-		temp.descrip = d->description;
+		temp.descrip = d->description; 
 		pcap_lookupnet(d->name, &net_ip, &net_mask, errbuf); // 获取掩码以及IP地址
 		net_ip_address.s_addr = net_ip;
 		net_mask_address.s_addr = net_mask;
@@ -103,6 +103,8 @@ void output()
 	}
 	std::cout <<"The numbers of NIC: " << devices.size()<<std::endl;
 }
+
+
 std::string transIp(DWORD in)//对应的IP地址
 {
 	std::string ans;
@@ -119,6 +121,15 @@ std::string transIp(DWORD in)//对应的IP地址
 
 	char temp[100];
 	sprintf_s(temp, "%d.%d.%d.%d", num[0], num[1], num[2], num[3]);
+	ans = temp;
+	return ans;
+}
+
+std::string transMac(BYTE* MAC)//目的地址与源地址
+{
+	std::string ans;
+	char temp[100];
+	sprintf_s(temp, "%02X-%02X-%02X-%02X-%02X-%02X", int(MAC[0]), int(MAC[1]), int(MAC[2]), int(MAC[3]), int(MAC[4]), int(MAC[5]));
 	ans = temp;
 	return ans;
 }
@@ -166,11 +177,18 @@ void capturePacket()
 			continue;
 			
 		}
-
+		
 		IPPacket = (Data_t*)pkt_data;
 		SourceIP = ntohl(IPPacket->IPHeader.SrcIP);
 		DestinationIP = ntohl(IPPacket->IPHeader.DstIP);
+
 		std::cout << "Source IP: " << transIp(ntohl(SourceIP)) << std::endl;
+		std::cout << "Dst IP: " << transIp(ntohl(DestinationIP)) << std::endl;
+		std::cout << "Source MAC: " << transMac(IPPacket->FrameHeader.SrcMAC) << std::endl;
+		std::cout << "Dst MAC: " << transMac(IPPacket->FrameHeader.DesMAC) << std::endl;
+		printf("Checksum:%x\n", IPPacket->IPHeader.checkSum);
+		printf("ID:%x\n", IPPacket->IPHeader.ID);
+		printf("Len:%d\n", IPPacket->IPHeader.Ver_HLen);
 	}
 
 }
