@@ -1,0 +1,22 @@
+﻿  源.cpp
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(47,6): warning C4215: 使用了非标准扩展: 长浮点
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(90,17): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(91,20): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(155,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): warning C4477: “sscanf_s”: 格式字符串“%02X”需要类型“unsigned int *”的参数，但可变参数 1 拥有了类型“unsigned char *”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): message : 请考虑在格式字符串中使用“%hhX”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): warning C4477: “sscanf_s”: 格式字符串“%02X”需要类型“unsigned int *”的参数，但可变参数 2 拥有了类型“unsigned char *”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): message : 请考虑在格式字符串中使用“%hhX”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): warning C4477: “sscanf_s”: 格式字符串“%02X”需要类型“unsigned int *”的参数，但可变参数 3 拥有了类型“unsigned char *”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): message : 请考虑在格式字符串中使用“%hhX”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): warning C4477: “sscanf_s”: 格式字符串“%02X”需要类型“unsigned int *”的参数，但可变参数 4 拥有了类型“unsigned char *”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): message : 请考虑在格式字符串中使用“%hhX”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): warning C4477: “sscanf_s”: 格式字符串“%02X”需要类型“unsigned int *”的参数，但可变参数 5 拥有了类型“unsigned char *”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): message : 请考虑在格式字符串中使用“%hhX”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): warning C4477: “sscanf_s”: 格式字符串“%02X”需要类型“unsigned int *”的参数，但可变参数 6 拥有了类型“unsigned char *”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(179,17): message : 请考虑在格式字符串中使用“%hhX”
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(177,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(202,19): warning C4101: “DestinationIP”: 未引用的局部变量
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(202,9): warning C4101: “SourceIP”: 未引用的局部变量
+D:\学习\学期3\网络技术应用\Network-Technology\lab 3\lab 1\源.cpp(191): warning C4715: “nicFind”: 不是所有的控件路径都返回值
+  lab 1.vcxproj -> D:\学习\学期3\网络技术应用\Network-Technology\lab 3\x64\Debug\lab 1.exe
