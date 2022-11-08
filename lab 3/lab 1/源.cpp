@@ -1,3 +1,6 @@
+ï»¿#ifndef  HAVE_REMOTE
+#define HAVE_REMOTE
+#endif
 #include "pcap.h"
 #include <iostream>
 #include <vector>
@@ -6,11 +9,11 @@
 #include<Winsock2.h>
 
 #define SENDDEVICE "Network adapter 'MediaTek Wi-Fi 6 MT7921 Wireless LAN Card' on local host"
-#pragma pack(1)		//½øÈë×Ö½Ú¶ÔÆë·½Ê½
-typedef struct FrameHeader_t {	//Ö¡Ê×²¿
-	BYTE	DesMAC[6];	// Ä¿µÄµØÖ·
-	BYTE 	SrcMAC[6];	// Ô´µØÖ·
-	WORD	FrameType;	// Ö¡ÀàĞÍ
+#pragma pack(1)		//è¿›å…¥å­—èŠ‚å¯¹é½æ–¹å¼
+typedef struct FrameHeader_t {	//å¸§é¦–éƒ¨
+	BYTE	DesMAC[6];	// ç›®çš„åœ°å€
+	BYTE 	SrcMAC[6];	// æºåœ°å€
+	WORD	FrameType;	// å¸§ç±»å‹
 } FrameHeader_t;
 
 
@@ -26,7 +29,7 @@ typedef struct ARPFrame_t {
 	BYTE RecvHa[6];
 	DWORD RecvIP;
 }ARPFrame_t;
-#pragma pack()	//»Ö¸´È±Ê¡¶ÔÆë·½Ê½
+#pragma pack()	//æ¢å¤ç¼ºçœå¯¹é½æ–¹å¼
 
 struct dev
 {
@@ -38,17 +41,18 @@ struct dev
 
 };
 std::vector<dev> devices;
-const u_char* pkt_data;
-std::string hostMac;
+
+std::string hostMac = "";  // æ­¤å¤„æ”¾ç½®æœ¬æœºçš„MACåœ°å€
 ARPFrame_t* ARPProtocal;
 
-uint32_t netMask; // Ñ¡¶¨Éè±¸µÄ×ÓÍøÑÚÂë
-time_t start, now;//¼ÆÊ±
+uint32_t netMask; // é€‰å®šè®¾å¤‡çš„å­ç½‘æ©ç 
+unsigned char* ipMac = new unsigned char[6]; //æœ¬æœºMAC
+time_t start, now;//è®¡æ—¶
 long float time_sum;
 int nicId;
 
 
-int nicFind();  // ´ÓÉè±¸ÁĞ±íÖĞÉ¸Ñ¡³öÎŞÏßÍø¿¨
+int nicFind();  // ä»è®¾å¤‡åˆ—è¡¨ä¸­ç­›é€‰å‡ºæ— çº¿ç½‘å¡
 
 
 void getAllDev()
@@ -56,17 +60,17 @@ void getAllDev()
 	pcap_if_t* alldevs;
 	pcap_if_t* d;
 	pcap_addr_t* a;
-	char errbuf[PCAP_ERRBUF_SIZE]; // ºê¶¨Òå¸ø¶¨³¤¶È
+	char errbuf[PCAP_ERRBUF_SIZE]; // å®å®šä¹‰ç»™å®šé•¿åº¦
 	struct in_addr net_mask_address;
 	struct in_addr net_ip_address;
 
 	uint32_t net_ip;
 	uint32_t net_mask;
 
-	// »ñÈ¡±¾»úµÄÉè±¸ÁĞ±í
+	// è·å–æœ¬æœºçš„è®¾å¤‡åˆ—è¡¨
 	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, // Interface  
-		NULL,	// ÎŞĞèÈÏÖ¤
-		&alldevs,	// ÁĞ±íÊ×²¿
+		NULL,	// æ— éœ€è®¤è¯
+		&alldevs,	// åˆ—è¡¨é¦–éƒ¨
 		errbuf
 	) == -1)
 	{
@@ -79,20 +83,20 @@ void getAllDev()
 		dev temp;
 		temp.name = d->name;
 		temp.descrip = d->description;
-		pcap_lookupnet(d->name, &net_ip, &net_mask, errbuf); // »ñÈ¡ÑÚÂëÒÔ¼°IPµØÖ·
+		pcap_lookupnet(d->name, &net_ip, &net_mask, errbuf); // è·å–æ©ç ä»¥åŠIPåœ°å€
 		net_ip_address.s_addr = net_ip;
 		net_mask_address.s_addr = net_mask;
 
 		for (a = d->addresses; a != NULL; a = a->next) {
-			if (a->addr->sa_family == AF_INET)  // ÅĞ¶ÁµØÖ·ÊÇ·ñÎªIPµØÖ·
+			if (a->addr->sa_family == AF_INET)  // åˆ¤è¯»åœ°å€æ˜¯å¦ä¸ºIPåœ°å€
 			{
 
 				temp.addr = inet_ntoa(net_ip_address);
 				temp.netmask = inet_ntoa(net_mask_address);
 
-				//temp.addr = inet_ntoa(((struct sockaddr_in*)&(a->addr))->sin_addr); // ÕâÑù»ñÈ¡IPµØÖ·ÎªºÎ²»¶Ô£¿
+				//temp.addr = inet_ntoa(((struct sockaddr_in*)&(a->addr))->sin_addr); // è¿™æ ·è·å–IPåœ°å€ä¸ºä½•ä¸å¯¹ï¼Ÿ
 				if (temp.descrip == SENDDEVICE)
-					netMask = net_mask;  // »ñµÃĞèÒªÉè±¸µÄÑÚÂë
+					netMask = net_mask;  // è·å¾—éœ€è¦è®¾å¤‡çš„æ©ç 
 
 				devices.push_back(temp);
 
@@ -102,7 +106,7 @@ void getAllDev()
 	}
 
 	pcap_freealldevs(alldevs);
-	nicId = nicFind();
+	//nicId = nicFind();
 }
 
 void output()
@@ -130,7 +134,7 @@ void output(int id)
 }
 
 
-std::string transIp(DWORD in)//¶ÔÓ¦µÄIPµØÖ·
+std::string transIp(DWORD in)//å¯¹åº”çš„IPåœ°å€
 {
 	std::string ans;
 	DWORD mask[] = { 0xFF000000,0x00FF0000,0x0000FF00,0x000000FF };
@@ -160,9 +164,9 @@ u_long ipTrans(std::string in)
 	num[2] = num[2] << 8;
 	u_long temp = num[0] + num[1] + num[2] + num[3];
 	return htonl(temp);
-	
+
 }
-std::string transMac(BYTE* MAC)//Ä¿µÄµØÖ·ÓëÔ´µØÖ·
+std::string transMac(BYTE* MAC)//ç›®çš„åœ°å€ä¸æºåœ°å€
 {
 	std::string ans;
 	char temp[100];
@@ -181,7 +185,7 @@ BYTE* macTrans(std::string in)
 
 }
 
-int nicFind()  // ´ÓÉè±¸ÁĞ±íÖĞÉ¸Ñ¡³öÎŞÏßÍø¿¨
+int nicFind()  // ä»è®¾å¤‡åˆ—è¡¨ä¸­ç­›é€‰å‡ºæ— çº¿ç½‘å¡
 {
 	for (int i = 0; i < devices.size(); i++)
 	{
@@ -192,13 +196,14 @@ int nicFind()  // ´ÓÉè±¸ÁĞ±íÖĞÉ¸Ñ¡³öÎŞÏßÍø¿¨
 
 void capturePacket()
 {
-	char errbuf[PCAP_ERRBUF_SIZE]; // ºê¶¨Òå¸ø¶¨³¤¶È
-	
+	char errbuf[PCAP_ERRBUF_SIZE]; // å®å®šä¹‰ç»™å®šé•¿åº¦
+
 	int res;
-	pcap_t* adapter; // pcap_open·µ»ØÖµ
+	pcap_t* adapter; // pcap_openè¿”å›å€¼
 	pcap_pkthdr* pkt_header;
-	struct bpf_program fcode; //´æ´¢Ò»¸ö±àÒëºÃµÄ¹ıÂËÂë
-	
+	const u_char* pkt_data = new u_char;
+	struct bpf_program fcode; //å­˜å‚¨ä¸€ä¸ªç¼–è¯‘å¥½çš„è¿‡æ»¤ç 
+
 	ULONG		SourceIP, DestinationIP;
 
 	if (devices.empty())
@@ -208,13 +213,13 @@ void capturePacket()
 	}
 	output(nicId);
 
-	if ((adapter = pcap_open(devices[nicId].name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 3000, NULL, errbuf)) == NULL) //snaplen±íÊ¾°üµÄ³¤¶È
+	if ((adapter = pcap_open(devices[nicId].name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 3000, NULL, errbuf)) == NULL) //snaplenè¡¨ç¤ºåŒ…çš„é•¿åº¦
 	{
 		std::cout << "Open failed!" << std::endl;
 		return;
 	}
 
-	if (pcap_compile(adapter, &fcode, "arp", 1, netMask) < 0)  // ±àÒë¹ıÂËÂë
+	if (pcap_compile(adapter, &fcode, "arp", 1, netMask) < 0)  // ç¼–è¯‘è¿‡æ»¤ç 
 	{
 		std::cout << "Compile failed!" << std::endl;
 		return;
@@ -230,30 +235,31 @@ void capturePacket()
 	while ((res = pcap_next_ex(adapter, &pkt_header, &pkt_data)) >= 0)
 	{
 		now = time(NULL);
-		if (res == 0) 
+		if ((time_sum = difftime(now, start)) > 25) // è®¡æ—¶
+			break;
+		if (res == 0)
 		{
 			printf("Waiting:%f seconds\n", time_sum);
 			continue;
 		}
-		if ((time_sum = difftime(now, start)) > 15) // ¼ÆÊ±
-			break;
 		ARPProtocal = (ARPFrame_t*)(pkt_data);
-		if (ARPProtocal->Frameheader.FrameType== htons(0x0806))
+		if (ARPProtocal->Frameheader.FrameType == htons(0x0806))
 		{
-			
+
 			if (ARPProtocal->Operation == htons(0x0002))
 			{
 				std::cout << "SrcMAC: " << transMac(ARPProtocal->SendHa) << std::endl;
 				std::cout << "DstMAC: " << transMac(ARPProtocal->RecvHa) << std::endl;
-				if (ARPProtocal->SendIP == ipTrans(devices[nicId].addr))
-					hostMac = transMac(ARPProtocal->SendHa);
+
+				
 			}
 			else if (ARPProtocal->Operation == htons(0x0001))
 			{
 				std::cout << "requestSrcMAC: " << transMac(ARPProtocal->SendHa) << std::endl;
 				std::cout << "requestDstMAC: " << transMac(ARPProtocal->RecvHa) << std::endl;
+				
 			}
-			
+
 			continue;
 		}
 
@@ -266,33 +272,36 @@ void capturePacket()
 
 
 
-void sendARP(std::string destIp,std::string srcIp,std::string srcMac)
+void sendARP(std::string destIp, std::string srcIp, std::string srcMac)
 {
-	char errbuf[PCAP_ERRBUF_SIZE]; // ºê¶¨Òå¸ø¶¨³¤¶È
-	int nicId = 2; // Ñ¡ÔñÎŞÏßÍø¿¨×¥°ü»ñÈ¡ÏàÓ¦ĞÅÏ¢
-	pcap_t* adapter; // pcap_open·µ»ØÖµ
-	ARPFrame_t ARPFrame;
+	char errbuf[PCAP_ERRBUF_SIZE]; // å®å®šä¹‰ç»™å®šé•¿åº¦
+	pcap_t* adapter; // pcap_openè¿”å›å€¼
+	ARPFrame_t* ARPFrame = new ARPFrame_t;
+	memset(ARPFrame, 0, sizeof(ARPFrame_t));
 	/*capturePacket();
 	IPPacket = (Data_t*)pkt_data;*/
-	memcpy(ARPFrame.Frameheader.SrcMAC, macTrans(srcMac),6);
-	// ÉèÖÃÎª¹ã²¥µØÖ·
-	memset(ARPFrame.Frameheader.DesMAC, 0xff, 6);
-	ARPFrame.Frameheader.FrameType = htons(0x0806);
-	ARPFrame.ProtocolType = htons(0x0800);
-	ARPFrame.HLen = 6;
-	ARPFrame.PLen = 4;
-	ARPFrame.Operation = htons(0x0001);
-	// ÏÈÊ¹ÓÃĞéÄâµØÖ·À´Ïò±¾»ú·¢ËÍARP£¬»ñÈ¡±¾»úMAC¡¢IP
-	memcpy(ARPFrame.SendHa, macTrans(srcMac), 6); //ÉèÖÃÎª±¾»úMAC
-	ARPFrame.SendIP = ipTrans(srcIp); 
-	memset(ARPFrame.RecvHa, 0, 6);
-	ARPFrame.RecvIP = ipTrans(destIp);
-	if ((adapter = pcap_open(devices[nicId].name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 6000, NULL, errbuf)) == NULL) //snaplen±íÊ¾°üµÄ³¤¶È
+	memcpy(ARPFrame->Frameheader.SrcMAC, macTrans(srcMac), 6);
+	// è®¾ç½®ä¸ºå¹¿æ’­åœ°å€
+	memset(ARPFrame->Frameheader.DesMAC, 0xff, 6);
+	ARPFrame->Frameheader.FrameType = htons(0x0806);
+	ARPFrame->ProtocolType = htons(0x0800);
+	ARPFrame->HLen = 6;
+	ARPFrame->PLen = 4;
+	ARPFrame->Operation = htons(0x0001);
+	// å…ˆä½¿ç”¨è™šæ‹Ÿåœ°å€æ¥å‘æœ¬æœºå‘é€ARPï¼Œè·å–æœ¬æœºMACã€IP
+	memcpy(ARPFrame->SendHa, macTrans(srcMac), 6); //è®¾ç½®ä¸ºæœ¬æœºMAC
+	ARPFrame->SendIP = ipTrans(srcIp);
+	memset(ARPFrame->RecvHa, 0, 6);
+	ARPFrame->RecvIP = ipTrans(destIp);
+	if ((adapter = pcap_open(devices[nicId].name, 65536, PCAP_OPENFLAG_PROMISCUOUS, 6000, NULL, errbuf)) == NULL) //snaplenè¡¨ç¤ºåŒ…çš„é•¿åº¦
 	{
 		std::cout << "Open failed!" << std::endl;
 	}
-	if (pcap_sendpacket(adapter, (const u_char*)&ARPFrame, sizeof(ARPFrame_t)) != 0)
+	if (pcap_sendpacket(adapter, (unsigned char*)ARPFrame, sizeof(ARPFrame_t)) != 0)
+	{
 		std::cout << "Send failed!" << std::endl;
+		return;
+	}
 	else
 	{
 		std::cout << "Send successful!" << std::endl;
@@ -301,19 +310,22 @@ void sendARP(std::string destIp,std::string srcIp,std::string srcMac)
 
 }
 
+
 int main()
 {
 
 
 	getAllDev();
-	//output();
-	
-	
-	std::string dstIp,srcIp,srcMac;
-	
-	sendARP(devices[nicId].addr,"112.112.112.112","66-66-66-66-66-66"); // Ê×ÏÈÓÉĞéÄâµØÖ·Ïò±¾»úIP·¢ËÍÊı¾İ°ü£¬»ñÈ¡±¾»úMAC
-	
-	//sendARP("192.168.192.126", devices[nicId].addr, hostMac);
+	output();
+
+	std::cin >> nicId ;
+
+
+	//sendARP(devices[nicId].addr, "112.112.112.112", "66-66-66-66-66-66"); // é¦–å…ˆç”±è™šæ‹Ÿåœ°å€å‘æœ¬æœºIPå‘é€æ•°æ®åŒ…ï¼Œè·å–æœ¬æœºMAC
+	std::string dstip;
+	std::cin >> dstip;
+
+	sendARP(dstip, devices[nicId].addr, hostMac);
 	capturePacket();
 
 }
