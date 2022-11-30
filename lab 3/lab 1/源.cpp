@@ -42,7 +42,7 @@ struct dev
 };
 std::vector<dev> devices;
 
-std::string hostMac = "";  // 此处放置本机的MAC地址
+std::string hostMac = " 4C-D5-77-B9-5A-41";  // 此处放置本机的MAC地址
 ARPFrame_t* ARPProtocal;
 
 uint32_t netMask; // 选定设备的子网掩码
@@ -248,15 +248,15 @@ void capturePacket()
 
 			if (ARPProtocal->Operation == htons(0x0002))
 			{
-				std::cout << "SrcMAC: " << transMac(ARPProtocal->SendHa) << std::endl;
-				std::cout << "DstMAC: " << transMac(ARPProtocal->RecvHa) << std::endl;
-
+				std::cout << "replySrcMAC: " << transMac(ARPProtocal->SendHa) << std::endl;
+				std::cout << "replyDstMAC: " << transMac(ARPProtocal->RecvHa) << std::endl;
 				
 			}
 			else if (ARPProtocal->Operation == htons(0x0001))
 			{
 				std::cout << "requestSrcMAC: " << transMac(ARPProtocal->SendHa) << std::endl;
 				std::cout << "requestDstMAC: " << transMac(ARPProtocal->RecvHa) << std::endl;
+				std::cout << "requestSrcIP: " << transIp(ARPProtocal->SendIP) << std::endl;
 				
 			}
 
@@ -311,6 +311,7 @@ void sendARP(std::string destIp, std::string srcIp, std::string srcMac)
 }
 
 
+
 int main()
 {
 
@@ -321,11 +322,11 @@ int main()
 	std::cin >> nicId ;
 
 
-	//sendARP(devices[nicId].addr, "112.112.112.112", "66-66-66-66-66-66"); // 首先由虚拟地址向本机IP发送数据包，获取本机MAC
+	sendARP(devices[nicId].addr, "112.112.112.112", "66-66-66-66-66-66"); // 首先由虚拟地址向本机IP发送数据包，获取本机MAC
 	std::string dstip;
 	std::cin >> dstip;
 
-	sendARP(dstip, devices[nicId].addr, hostMac);
+	//sendARP(dstip, devices[nicId].addr, hostMac);
 	capturePacket();
 
 }
