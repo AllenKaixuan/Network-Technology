@@ -1,0 +1,11 @@
+﻿  源.cpp
+D:\Browser\network_tec-main\路由器\源.cpp(38,7): warning C4101: “mac”: 未引用的局部变量
+D:\Browser\network_tec-main\路由器\源.cpp(107,35): warning C4474: printf: 格式字符串中传递的参数太多
+D:\Browser\network_tec-main\路由器\源.cpp(107,35): message : 占位符和其参数预计 1 可变参数，但提供的却是 2 参数
+D:\Browser\network_tec-main\路由器\源.cpp(271,25): warning C4101: “header”: 未引用的局部变量
+  正在生成代码
+  17 of 39 functions (43.6%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  Project1.vcxproj -> C:\Users\lxk68\Desktop\Project1\Release\Project1.exe
